@@ -1,39 +1,28 @@
 <?php
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
 require_once 'vendor/autoload.php';
 
-//PHPMailer Object
-$mail = new PHPMailer( true );
-//Argument true in constructor enables exceptions
+$mail = new PHPMailer(true);
+$mail->isSMTP();
+$mail->Host = 'smtp.office365.com';
+$mail->Port       = 587;
+$mail->SMTPSecure = 'tls';
+$mail->SMTPAuth   = true;
+$mail->Username = 'your-outlook-email-address';
+$mail->Password = 'your-outlook-password';
+$mail->SetFrom('your-outlook-email-address( = username)', 'FromEmail');
+$mail->addAddress('receiver-user-email', 'ToEmail');
+//$mail->SMTPDebug  = 3;
+//$mail->Debugoutput = function($str, $level) {echo "debug level $level; message: $str";}; //$mail->Debugoutput = 'echo';
+$mail->IsHTML(true);
 
-//From email address and name
-$mail->From = 'from@yourdomain.com';
-$mail->FromName = 'Full Name';
+$mail->Subject = 'Here is the subject';
+$mail->Body    = 'This is authenticated by **** user';
+$mail->AltBody = 'Authentication user and send user should be equal. This is test message, so understand issue from outlook';
 
-//To address and name
-$mail->addAddress( 'recepient1@example.com', 'Recepient Name' );
-$mail->addAddress( 'recepient1@example.com' );
-//Recipient name is optional
-
-//Address to which recipient will reply
-$mail->addReplyTo( 'reply@yourdomain.com', 'Reply' );
-
-//CC and BCC
-$mail->addCC( 'cc@example.com' );
-$mail->addBCC( 'bcc@example.com' );
-
-//Send HTML or Plain Text email
-$mail->isHTML( true );
-
-$mail->Subject = 'Subject Text';
-$mail->Body = '<i>Mail body in HTML</i>';
-$mail->AltBody = 'This is the plain text version of the email content';
-
-try {
-    $mail->send();
-    echo 'Message has been sent successfully';
-} catch ( Exception $e ) {
+if(!$mail->send()) {
+    echo 'Message could not be sent.';
     echo 'Mailer Error: ' . $mail->ErrorInfo;
+} else {
+    echo 'Message has been sent';
 }
